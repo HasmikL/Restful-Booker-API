@@ -151,7 +151,7 @@ test('Booking - CreateBooking', async({request})=>{
 
   //////////////////////////HOMEWORK//////////////////////////
 
-test.describe ('With Auth Tests', ()=>{
+test.describe ('With Auth Tests @auth', ()=>{
 
 
     let token: string;
@@ -171,7 +171,7 @@ test.describe ('With Auth Tests', ()=>{
       token = data.token;
   });
 
-test('Booking - UpdateBooking',async({request})=>{
+test('Booking - UpdateBooking @auth',async({request})=>{
        
       
   const createResponse = await request.post('https://restful-booker.herokuapp.com/booking', {
@@ -225,7 +225,7 @@ test('Booking - UpdateBooking',async({request})=>{
 });
 
        
-test('Booking- PartialUpdateBooking', async ({ request }) => {
+test('Booking- PartialUpdateBooking @auth', async ({ request }) => {
  
   const createResponse = await request.post('https://restful-booker.herokuapp.com/booking', {
     headers: { 'Content-Type': 'application/json' },
@@ -270,7 +270,7 @@ test('Booking- PartialUpdateBooking', async ({ request }) => {
 });
 
 
-test('Booking- DeleteBooking', async ({ request }) => {
+test('Booking- DeleteBooking @auth', async ({ request }) => {
  
   const createResponse = await request.post('https://restful-booker.herokuapp.com/booking', {
     headers: { 'Content-Type': 'application/json' },
@@ -297,7 +297,7 @@ test('Booking- DeleteBooking', async ({ request }) => {
   expect(deleteResponse.status()).toBe(201);
 });
 
-test('Ping - HealthCheck', async ({ request }) => {
+test('Ping - HealthCheck @ping', async ({ request }) => {
 
     const response = await request.get('https://restful-booker.herokuapp.com/ping');
 
