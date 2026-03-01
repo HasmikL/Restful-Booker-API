@@ -1,0 +1,65 @@
+name: Playwright API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Suite to run"
+        type: choice
+        options:
+          - all
+          - auth
+          - ping
+          - booking_read
+          - booking_write
+        default: all
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run tests (selected suite)
+        env:
+          SUITE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.suite || 'all' }}
+        run: |
+          echo "Suite: $SUITE"
+          if [ "$SUITE" = "all" ]; then
+            npx playwright test
+          elif [ "$SUITE" = "auth" ]; then
+            npx playwright test --grep "auth"
+          elif [ "$SUITE" = "ping" ]; then
+            npx playwright test --grep "ping"
+          elif [ "$SUITE" = "booking_read" ]; then
+            npx playwright test --grep "GetBookingIds|GetBooking" --grep-invert "CreateBooking|UpdateBooking|PartialUpdateBooking|DeleteBooking" || true
+          elif [ "$SUITE" = "booking_write" ]; then
+            npx playwright test --grep "CreateBooking|UpdateBooking|PartialUpdateBooking|DeleteBooking"
+          else
+            echo "Unknown suite: $SUITE"
+            exit 1
+          fi
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
