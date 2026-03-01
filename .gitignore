@@ -8,3 +8,5 @@ node_modules/
 /playwright/.auth/
 .DS_Store
 **/.DS_Store
+.DS_Store
+**/.DS_Store
